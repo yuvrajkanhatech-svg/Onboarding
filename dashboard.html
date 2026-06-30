@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanha Pro-Capital - Dashboard</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f1f5f9; padding: 15px; color: #1e293b; }
+        .header { background: #1e3a8a; color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 22px; margin-bottom: 5px; }
+        .header p { font-size: 13px; opacity: 0.9; }
+
+        .btn-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        .btn-action { flex: 1; background: #2563eb; color: white; text-align: center; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .btn-action.green { background: #10b981; }
+
+        .log-container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .log-container h2 { font-size: 16px; color: #334155; margin-bottom: 15px; border-left: 4px solid #1e3a8a; padding-left: 8px; text-transform: uppercase; }
+
+        /* Scannable Responsive Table Styling */
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 13px; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+        tr:hover { background: #f8fafc; }
+        
+        .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 4px; }
+        .btn-delete:hover { background: #dc2626; }
+        
+        .no-data { text-align: center; color: #94a3b8; padding: 30px 10px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>KANHA PRO-CAPITAL</h1>
+        <p>Merchant Executive Terminal Dashboard</p>
+    </div>
+
+    <div class="btn-container">
+        <a href="onboarding.html" class="btn-action green">➕ New Onboarding</a>
+        <a href="index.html" class="btn-action" style="background:#64748b;">Logout</a>
+    </div>
+
+    <div class="log-container">
+        <h2>Customer Onboarding Status Log</h2>
+        
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Customer Name</th>
+                        <th>Mobile Number</th>
+                        <th>Nominee Name</th>
+                        <th style="text-align: center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Log Data ko Display karne ka Main Engine
+        function displayOnboardingLogs() {
+            const tableBody = document.getElementById('logTableBody');
+            tableBody.innerHTML = ''; // Pehle table body clear karein
+
+            // LocalStorage se onboarding array fetch karein
+            const logs = JSON.parse(localStorage.getItem('onboardingRecords')) || [];
+
+            // Agar koi record nahi hai toh dashboard empty status message dikhaye
+            if (logs.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="no-data">No records found. Click "New Onboarding" to register a customer.</td></tr>`;
+                return;
+            }
+
+            // Loop chalakar table me rows add karein
+            logs.forEach((record, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.date || '-'}</td>
+                    <td style="font-weight: 600; color: #0f172a;">${record.name}</td>
+                    <td>${record.mobile}</td>
+                    <td>${record.nominee || '-'}</td>
+                    <td style="text-align: center; display: flex; justify-content: center;">
+                        <button class="btn-delete" onclick="deleteRecord(${index})">
+                            🗑️ Delete
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Kisi single record ko delete karne ka function
+        function deleteRecord(index) {
+            if (confirm("Kya aap sach me is customer ka record log se permanently delete karna chahte hain?")) {
+                let logs = JSON.parse(localStorage.getItem('onboardingRecords')) || [];
+                
+                // Array se data ko cut/splice karein
+                logs.splice(index, 1);
+                
+                // Wapas clean array save karein
+                localStorage.setItem('onboardingRecords', JSON.stringify(logs));
+                
+                // Dashboard dynamic refresh karein
+                displayOnboardingLogs();
+            }
+        }
+
+        // Screen load hote hi automatic dashboard render run ho jaye
+        window.onload = displayOnboardingLogs;
+    </script>
+</body>
+</html>
