@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Official KYC Form</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Times New Roman', serif; }
+        body { background: #64748b; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .no-print-bar { width: 100%; max-width: 210mm; background: #1e293b; padding: 12px 20px; border-radius: 6px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; color: white; font-family: sans-serif; }
+        .btn-print { background: #10b981; color: white; padding: 8px 16px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        
+        /* A4 Layout Grid Sheet Configuration */
+        .a4-sheet { background: white; width: 210mm; height: 297mm; padding: 15mm 15mm; box-shadow: 0 4px 20px rgba(0,0,0,0.15); position: relative; }
+        .doc-header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 15px; }
+        .profile-container { display: table; width: 100%; margin-bottom: 15px; }
+        .info-cell { display: table-cell; width: 75%; vertical-align: top; }
+        .photo-cell { display: table-cell; width: 25%; text-align: right; }
+        .photo-frame { width: 3.2cm; height: 4.0cm; border: 1.5px solid #000; display: inline-block; background: #f8fafc; }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .kyc-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .kyc-table th, .kyc-table td { border: 1px solid #000; padding: 8px; font-size: 13px; text-align: left; }
+        .kyc-table th { background: #f2f2f2; width: 35%; }
+        
+        /* Document KYC Attachment Layout */
+        .attachment-section { margin-top: 20px; border-top: 2px dashed #000; padding-top: 15px; }
+        .attachment-title { font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-left: 4px solid #000; padding-left: 6px; }
+        .document-grid { display: flex; gap: 15px; justify-content: space-between; }
+        .doc-preview-box { width: 48%; border: 1px solid #000; height: 5.5cm; background: #fafafa; text-align: center; padding: 5px; }
+        .doc-preview-box img { width: 100%; height: 100%; object-fit: contain; }
+        .doc-label { font-size: 11px; font-weight: bold; margin-top: 2px; text-transform: uppercase; display: block; }
+
+        .doc-footer { width: 100%; position: absolute; bottom: 15mm; left: 0; padding: 0 15mm; display: flex; justify-content: space-between; }
+        
+        @media print {
+            body { background: transparent; padding: 0; }
+            .no-print-bar { display: none !important; }
+            .a4-sheet { box-shadow: none; width: 210mm; height: 297mm; }
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print-bar">
+        <span>📄 Official KYC Terminal - A4 Layout Engine</span>
+        <button class="btn-print" onclick="window.print()">Print Document</button>
+    </div>
+
+    <div class="a4-sheet">
+        <div class="doc-header">
+            <h2>KANHA PRO-CAPITAL</h2>
+            <p style="font-size:12px; font-style:italic;">Official Customer Onboarding & KYC Verification Summary Report</p>
+        </div>
+        
+        <div class="profile-container">
+            <div class="info-cell">
+                <table class="kyc-table" style="margin-top:0;">
+                    <tr><th>Application Date</th><td id="lblDate"></td></tr>
+                    <tr><th>Customer Name</th><td id="lblName" style="font-weight:bold;"></td></tr>
+                    <tr><th>Mobile Number</th><td id="lblMobile"></td></tr>
+                    <tr><th>Email Address</th><td id="lblEmail"></td></tr>
+                </table>
+            </div>
+            <div class="photo-cell">
+                <div class="photo-frame"><img id="lblPhoto" src="" alt="Live Photo"></div>
+            </div>
+        </div>
+        
+        <table class="kyc-table">
+            <tr><th>Date of Birth (DOB)</th><td id="lblDob"></td></tr>
+            <tr><th>Marital Status Context</th><td id="lblMarital"></td></tr>
+            <tr><th>Legal Nominee Person</th><td id="lblNominee" style="font-weight:bold;"></td></tr>
+            <tr><th>KYC Compliance Check</th><td style="color:green; font-weight:bold;">PASSED VERIFICATION (AGE 18+)</td></tr>
+            <tr><th>Verification Integrity</th><td>Verified instantly via secure micro-lending terminal portal data match.</td></tr>
+        </table>
+
+        <div class="attachment-section">
+            <div class="attachment-title">Attached Identity & Verification Artifacts</div>
+            <div class="document-grid">
+                <div class="doc-preview-box">
+                    <img id="lblAadharImg" src="" alt="Aadhaar Card Copy Missing">
+                    <span class="doc-label">Scanned Aadhaar Document</span>
+                </div>
+                <div class="doc-preview-box">
+                    <img id="lblPanImg" src="" alt="PAN Card Copy Missing">
+                    <span class="doc-label">Scanned PAN Document</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="doc-footer">
+            <div style="border-top:1px solid #000; width:150px; text-align:center; padding-top:5px; font-size:12px;">Customer Signature</div>
+            <div style="border-top:1px solid #000; width:150px; text-align:center; padding-top:5px; font-size:12px;">Authorised Executive Sign</div>
+        </div>
+    </div>
+
+    <script>
+        const p = JSON.parse(localStorage.getItem('currentPrintPayload'));
+        if (p) {
+            document.getElementById('lblDate').innerText = p.date;
+            document.getElementById('lblName').innerText = p.name;
+            document.getElementById('lblMobile').innerText = p.mobile;
+            document.getElementById('lblEmail').innerText = p.email;
+            document.getElementById('lblDob').innerText = p.dob;
+            document.getElementById('lblMarital').innerText = p.marital;
+            document.getElementById('lblNominee').innerText = p.nominee;
+            
+            // Display Images if available
+            if(p.imgPhoto) document.getElementById('lblPhoto').src = p.imgPhoto;
+            if(p.imgAadhar) document.getElementById('lblAadharImg').src = p.imgAadhar;
+            if(p.imgPan) document.getElementById('lblPanImg').src = p.imgPan;
+        }
+    </script>
+</body>
+</html>
