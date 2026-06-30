@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Login - Onboarding Portal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .login-card { background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .logo-section h2 { color: #1e3a8a; margin-bottom: 5px; font-size: 24px; }
+        .logo-section p { color: #6b7280; font-size: 14px; margin-bottom: 25px; }
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: #374151; font-size: 14px; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; outline: none; }
+        .form-group input:focus { border-color: #2563eb; }
+        .login-btn { width: 100%; background: #2563eb; color: #ffffff; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .error-msg { color: #dc2626; font-size: 14px; margin-top: 10px; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo-section">
+            <h2>Kanha Pro-Capital</h2>
+            <p>Executive Onboarding Portal</p>
+        </div>
+        <div class="form-group">
+            <label>Authorized Mobile Number</label>
+            <input type="tel" id="mobileNumber" placeholder="Enter 10-digit number" maxlength="10">
+        </div>
+        <button class="login-btn" onclick="handleLogin()">Secure Login</button>
+        <div id="errorBox" class="error-msg"></div>
+    </div>
+
+    <script>
+        const authorizedUsers = {
+            "7038164867": { name: "Yuvraj", designation: "CEO" },
+            "6262680908": { name: "Jagmohan", designation: "CFO" },
+            "9926537413": { name: "Laxminarayan", designation: "COO" }
+        };
+
+        function handleLogin() {
+            const mobile = document.getElementById('mobileNumber').value.trim();
+            const errorBox = document.getElementById('errorBox');
+            if (authorizedUsers[mobile]) {
+                localStorage.setItem('activeUser', JSON.stringify(authorizedUsers[mobile]));
+                window.location.href = 'dashboard.html';
+            } else {
+                errorBox.innerText = "Access Denied: Unauthorized Mobile Number.";
+            }
+        }
+    </script>
+</body>
+</html>
